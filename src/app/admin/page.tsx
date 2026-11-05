@@ -27,7 +27,6 @@ interface Booking {
   };
 }
 
-// Equipe oficial fixa para garantir que o painel nunca quebre
 const OFFICIAL_BARBERS: Barber[] = [
   { id: 1, name: "Davi", phone: "5513999999999", notificationsActive: true },
   { id: 2, name: "Caio", phone: "5513999999999", notificationsActive: true },
@@ -37,7 +36,7 @@ const OFFICIAL_BARBERS: Barber[] = [
 export default function AdminPage() {
   const [barbers, setBarbers] = useState<Barber[]>(OFFICIAL_BARBERS);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [selectedRole, setSelectedRole] = useState<string>("admin"); // "admin" ou ID do barbeiro
+  const [selectedRole, setSelectedRole] = useState<string>("admin");
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [loginError, setLoginError] = useState<string>("");
 
@@ -45,7 +44,6 @@ export default function AdminPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [editingBarber, setEditingBarber] = useState<Barber | null>(null);
   
-  // Estados para troca de senha do próprio barbeiro
   const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
   const [newPin, setNewPin] = useState<string>("");
 
@@ -82,11 +80,10 @@ export default function AdminPage() {
     e.preventDefault();
     setLoginError("");
 
-    // Senha padrão 1234 para o Admin e para todos os barbeiros
     if (passwordInput === "1234") {
       setIsAuthenticated(true);
     } else {
-      setLoginError("Senha incorreta. A senha padrão de acesso é 1234.");
+      setLoginError("Senha incorreta.");
     }
     setPasswordInput("");
   };
@@ -160,8 +157,7 @@ export default function AdminPage() {
       <main className="min-h-screen bg-zinc-950 text-zinc-100 p-4 sm:p-8 flex flex-col items-center justify-center">
         <div className="max-w-md w-full bg-zinc-900/90 border border-zinc-800 rounded-3xl p-8 shadow-2xl space-y-6 backdrop-blur-md">
           <div className="text-center space-y-2">
-            <h1 className="text-2xl font-black text-amber-500 uppercase tracking-wide">Área Restrita</h1>
-            <p className="text-xs text-zinc-400">Senha padrão de acesso: <strong className="text-amber-400">1234</strong></p>
+            <h1 className="text-2xl font-black text-amber-500 uppercase tracking-wide">Painel Barbeiros</h1>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -185,7 +181,7 @@ export default function AdminPage() {
 
             <div>
               <label className="block text-xs font-bold uppercase text-zinc-400 mb-2">
-                Senha (Padrão: 1234)
+                Senha
               </label>
               <input
                 type="password"
