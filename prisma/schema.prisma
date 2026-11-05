@@ -1,0 +1,51 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Professional {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  phone               String?
+  password            String    @default("1234") // Senha padrão de 4 dígitos
+  notificationsActive Boolean   @default(true)
+  bookings            Booking[]
+}
+
+model Service {
+  id              String    @id
+  name            String
+  priceCents      Int
+  durationMinutes Int       @default(60)
+  bookings        Booking[]
+}
+
+model Customer {
+  id       String    @id @default(uuid())
+  name     String
+  phone    String
+  bookings Booking[]
+}
+
+model Booking {
+  id             String       @id @default(uuid())
+  code           String
+  startsAt       DateTime
+  endsAt         DateTime
+  status         String       @default("CONFIRMED")
+  
+  professionalId Int
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  
+  serviceId      String
+  service        Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  customerId     String
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  createdAt      DateTime     @default(now())
+}
