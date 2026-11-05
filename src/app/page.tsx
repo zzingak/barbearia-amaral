@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 
 interface Service {
   id: string;
@@ -57,13 +56,11 @@ export default function Home() {
   const [currentBgIndex, setCurrentBgIndex] = useState<number>(0);
 
   const [clientName, setClientName] = useState<string>("");
-  const [clientPhone, setClientPhone] = useState<string>("");
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
   const [confirmedBooking, setConfirmedBooking] = useState<{
     code: string;
     clientName: string;
-    clientPhone: string;
     dateStr: string;
     timeStr: string;
     barberName: string;
@@ -113,7 +110,7 @@ export default function Home() {
     e.preventDefault();
     if (loadingSubmit) return;
 
-    if (!selectedBarber || !selectedDateStr || !selectedTime || !selectedService || !clientName || !clientPhone) {
+    if (!selectedBarber || !selectedDateStr || !selectedTime || !selectedService || !clientName) {
       setMessage({ type: "error", text: "Preencha todos os campos para continuar." });
       return;
     }
@@ -128,12 +125,10 @@ export default function Home() {
     const currentBarber = barbers.find((b) => b.id === selectedBarber) || barbers[0];
     const currentServObj = SERVICES.find((s) => s.id === selectedService) || SERVICES[0];
 
-    // Simula um breve processamento e exibe a tela de confirmação pronta para o WhatsApp
     setTimeout(() => {
       setConfirmedBooking({
         code: randomCode,
         clientName,
-        clientPhone,
         dateStr: formattedDateBR,
         timeStr: selectedTime,
         barberName: currentBarber.name,
@@ -231,7 +226,7 @@ export default function Home() {
                 Falta apenas enviar para o WhatsApp
               </h2>
               <p className="text-zinc-200 text-xs mt-1">
-                Clique no botão abaixo para enviar os detalhes do seu horário para o barbeiro {confirmedBooking.barberName}.
+                Clique no botão abaixo para abrir o WhatsApp e enviar os detalhes do seu horário para o barbeiro {confirmedBooking.barberName}.
               </p>
             </div>
 
@@ -241,7 +236,7 @@ export default function Home() {
                 <span className="font-mono text-amber-500 font-bold">{confirmedBooking.code}</span>
               </div>
               <div className="flex justify-between border-b border-zinc-800 pb-2">
-                <span className="text-zinc-400 font-bold">Cliente:</span>
+                <span className="text-zinc-400 font-bold">Seu Nome:</span>
                 <span className="text-zinc-100 font-bold">{confirmedBooking.clientName}</span>
               </div>
               <div className="flex justify-between border-b border-zinc-800 pb-2">
@@ -454,23 +449,11 @@ export default function Home() {
                   className="w-full bg-zinc-900/90 backdrop-blur-md border border-zinc-700 rounded-xl p-3 text-zinc-100 focus:outline-none focus:border-amber-500 shadow-inner"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1 text-zinc-200">WhatsApp / Telefone</label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="(00) 00000-0000"
-                  value={clientPhone}
-                  onChange={(e) => setClientPhone(e.target.value)}
-                  className="w-full bg-zinc-900/90 backdrop-blur-md border border-zinc-700 rounded-xl p-3 text-zinc-100 focus:outline-none focus:border-amber-500 shadow-inner"
-                />
-              </div>
             </div>
 
             <button
               type="submit"
-              disabled={loadingSubmit || !selectedBarber || !selectedDateStr || !selectedTime || !selectedService || !clientName || !clientPhone}
+              disabled={loadingSubmit || !selectedBarber || !selectedDateStr || !selectedTime || !selectedService || !clientName}
               className="w-full py-4 bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-zinc-950 font-bold rounded-xl transition-all shadow-lg text-base uppercase font-black"
             >
               {loadingSubmit ? "Gerando..." : "Gerar Agendamento via WhatsApp"}
