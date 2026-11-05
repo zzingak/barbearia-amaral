@@ -40,12 +40,19 @@ const BACKGROUND_VIDEOS = [
   "/video2.mp4"
 ];
 
+// Equipe oficial fixa para garantir funcionamento imediato e sem falhas
+const OFFICIAL_BARBERS: Barber[] = [
+  { id: 1, name: "Davi", phone: "5513999999999" },
+  { id: 2, name: "Caio", phone: "5513999999999" },
+  { id: 3, name: "Lucas", phone: "5513999999999" },
+];
+
 const BARBERIA_WHATSAPP = "557398309182";
 
 export default function Home() {
   const defaultServiceId = SERVICES[0].id;
 
-  const [barbers, setBarbers] = useState<Barber[]>([]);
+  const [barbers, setBarbers] = useState<Barber[]>(OFFICIAL_BARBERS);
   const [selectedBarber, setSelectedBarber] = useState<number>(1);
   const [selectedService, setSelectedService] = useState<string>(defaultServiceId);
 
@@ -81,36 +88,17 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [currentBgIndex]);
 
-  const fetchBarbers = async () => {
-    try {
-      const res = await fetch(`/api/admin/barbers?t=${Date.now()}`);
-      if (res.ok) {
-        const data: Barber[] = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setBarbers(data);
-          setSelectedBarber(data[0].id);
-        }
-      }
-    } catch (err) {
-      console.error("Erro ao carregar barbeiros:", err);
-    }
-  };
-
   const fetchOccupiedSlots = async () => {
     try {
       const res = await fetch(`/api/bookings?barberId=${selectedBarber}&t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
-        setOccupiedSlots(data);
+        setOccupiedSlots(Array.isArray(data) ? data : []);
       }
     } catch (err) {
       console.error("Erro ao buscar horários ocupados:", err);
     }
   };
-
-  useEffect(() => {
-    fetchBarbers();
-  }, []);
 
   useEffect(() => {
     if (selectedBarber) {
@@ -476,7 +464,7 @@ export default function Home() {
                 })}
               </div>
 
-              {/* AVISO SOLICITADO */}
+              {/* AVISO DE RODAPÉ DOS PROCEDIMENTOS */}
               <p className="text-xs text-zinc-400 font-medium mt-2.5 text-center">
                 Para demais procedimentos consultar no WhatsApp
               </p>
